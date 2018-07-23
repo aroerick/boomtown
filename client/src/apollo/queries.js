@@ -42,8 +42,8 @@ export const ITEM_QUERY = gql`
 `
 
 export const ALL_ITEMS_QUERY = gql`
-  query($id: ID) {
-    items (filter: $id){
+  query($filter: ID) {
+    items (filter: $filter){
       ...ItemFields
     }
     # @TODO: Query items (optionally by tag id) and return the ItemFields fragment.

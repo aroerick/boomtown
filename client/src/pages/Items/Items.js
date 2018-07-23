@@ -8,15 +8,17 @@ const Items = ({ classes }) => {
   return (
     <div>
         <ItemsContainer>
-        {({ itemsData: { data, loading, error } }) => {
+        {({ itemsData: { items, loading, error } }) => {
           if (loading) {
             return 'Content Loading...'
           }
           if (error) {
             return `error: ${error.message}`
           }
-          console.log(data)
-          return "items.map(item => <p>{item.title}</p>)"
+          console.log(items)
+          return items.map(item => (
+            <p key={item.id}>{item.title} {item.description}</p>
+          ))
         }}
       </ItemsContainer> 
     </div>

@@ -127,20 +127,35 @@ module.exports = function(postgres) {
         throw 'No Items Found'
       }
     },
+    // async getItemsForUser(id) {
+    //   const items = await postgres.query({
+    //     /**
+    //      *  @TODO: Advanced queries
+    //      *  Get all Items. Hint: You'll need to use a LEFT INNER JOIN among others
+    //      */
+    //     text: `SELECT *
+    //     FROM items 
+    //       INNER JOIN users
+    //       ON items.ownerid = users.id
+    //     WHERE users.id = $1;`,
+    //     values: [id]
+    //   })
+    //   return items.rows
+    // },
     async getItemsForUser(id) {
-      const items = await postgres.query({
-        /**
-         *  @TODO: Advanced queries
-         *  Get all Items. Hint: You'll need to use a LEFT INNER JOIN among others
-         */
-        text: `SELECT *
-        FROM items 
-          INNER JOIN users
-          ON items.ownerid = users.id
-        WHERE users.id = $1;`,
-        values: [id]
-      })
-      return items.rows
+      try {
+        const items = await postgres.query({
+          /**
+           *  @TODO: Advanced queries
+           *  Get all Items. Hint: You'll need to use a LEFT INNER JOIN among others
+           */
+          text: `SELECT * FROM items WHERE ownerid = $1`,
+          values: [id]
+        })
+        return items.rows
+      } catch (error) {
+        throw 'No Items Found'
+      }
     },
     async getBorrowedItemsForUser(id) {
       const items = await postgres.query({
@@ -161,22 +176,38 @@ module.exports = function(postgres) {
       const tags = await postgres.query(`SELECT * FROM tags`)
       return tags.rows
     },
+    // async getTagsForItem(id) {
+    //   const tagsQuery = {
+    //     text: `SELECT * as tags
+    //     FROM 
+    //       items
+    //       INNER JOIN itemtags
+    //         ON items.id = itemtags.itemid
+    //       INNER JOIN tags
+    //         ON itemtags.tagid = tags.id
+    //     WHERE
+    //       items.id = $1;`, // @TODO: Advanced queries
+    //     values: [id]
+    //   }
+
+    //   const tags = await postgres.query(tagsQuery)
+    //   return tags.rows
+    // },
     async getTagsForItem(id) {
       const tagsQuery = {
-        text: `SELECT tags.title as tags
-        FROM 
-          items
-          INNER JOIN itemtags
-            ON items.id = itemtags.itemid
-          INNER JOIN tags
-            ON itemtags.tagid = tags.id
-        WHERE
-          items.id = $1;`, // @TODO: Advanced queries
+        text: `SELECT item.itemid, t.id, t.title 
+        FROM itemtags item
+        INNER JOIN tags t
+        ON t.id = item.tagid
+        WHERE itemid = $1`,
         values: [id]
       }
-
-      const tags = await postgres.query(tagsQuery)
-      return tags.rows
+      try {
+        const tags = await postgres.query(tagsQuery)
+        return tags.rows
+      } catch (error) {
+        throw 'No Tags on Item'
+      }
     },
     async saveNewItem({ item, image, user }) {
       /**

@@ -136,14 +136,14 @@ module.exports = function(app) {
         }
         // -------------------------------
       },
-      async borrower() {
+      async borrower(parent, args, { pgResource }, info) {
         /**
          * @TODO: Replace this mock return statement with the correct user from Postgres
          * or null in the case where the item has not been borrowed.
          */
         try {
-          const tags = pgResource.getTagsForItem(parent.borrowerid)
-          return tags
+          const borrower = pgResource.getUserById(parent.borrowerid)
+          return borrower
         } catch (e) {
           throw new ApolloError(e)
         }
