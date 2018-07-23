@@ -52,16 +52,16 @@ module.exports = function(app) {
           throw new ApolloError(e)
         }
       },
-      async items(parent, { id }, { pgResource }, info) {
+      async items(parent, { filter }, { pgResource }, info) {
         try {
-          const item = await pgResource.getItems(id)
+          const item = await pgResource.getItems(filter)
           return item
         } catch (e) {
           throw new ApolloError(e)
         }
         // -------------------------------
       },
-      async tags(parent, { }, { pgResource }, info) {
+      async tags(parent, args, { pgResource }, info) {
         try {
           const tag = await pgResource.getTags()
           return tag
@@ -115,7 +115,7 @@ module.exports = function(app) {
        */
       // @TODO: Uncomment these lines after you define the Item type with these fields
       async itemowner(parent, args, { pgResource }, info) {
-        const owner = pgResource.getUserById(item.ownerid)
+        const owner = pgResource.getUserById(parent.ownerid)
         return owner
         // @TODO: Replace this mock return statement with the correct user from Postgres
         // return {
@@ -126,24 +126,29 @@ module.exports = function(app) {
         // }
         // -------------------------------
       },
-      async tags(parent, { id }, { pgResource }, info) {
+      async tags(parent, args, { pgResource }, info) {
         // @TODO: Replace this mock return statement with the correct tags for the queried Item from Postgres
         try {
-          const tags = pgResource.getTagsForItem(id)
+          const tags = pgResource.getTagsForItem(parent.id)
           return tags
         } catch (e) {
           throw new ApolloError(e)
         }
         // -------------------------------
       },
-      // async borrower() {
-      //   /**
-      //    * @TODO: Replace this mock return statement with the correct user from Postgres
-      //    * or null in the case where the item has not been borrowed.
-      //    */
-      //   return null
-      //   // -------------------------------
-      // },
+      async borrower() {
+        /**
+         * @TODO: Replace this mock return statement with the correct user from Postgres
+         * or null in the case where the item has not been borrowed.
+         */
+        try {
+          const tags = pgResource.getTagsForItem(parent.borrowerid)
+          return tags
+        } catch (e) {
+          throw new ApolloError(e)
+        }
+        // -------------------------------
+      },
       // async imageurl({ imageurl, imageid, mimetype, data }) {
       //   if (imageurl) return imageurl
       //   if (imageid) {
