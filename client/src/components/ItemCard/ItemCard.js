@@ -5,8 +5,40 @@ import Grid from '@material-ui/core/Grid'
 import Input from '@material-ui/core/Input'
 import InputLabel from '@material-ui/core/InputLabel'
 import React, { Component } from 'react'
-import Typography from '@material-ui/core/Typography'
+import {
+  Typography,
+  Card,
+  CardMedia,
+  CardContent,
+  CardActions
+} from '@material-ui/core'
+import styles from './styles'
 
 class ItemCard extends Component {
-    
+  render() {
+    console.log(this.props)
+    const { classes, item } = this.props
+    return (
+      <Card className={classes.card}>
+        <CardMedia
+          className={classes.media}
+          image={item.imageUrl}
+          title="Contemplative Reptile"
+        />
+        <CardContent>
+          <Typography gutterBottom variant="headline" component="h2">
+            {item.title}
+          </Typography>
+          <Typography component="p">{item.description}</Typography>
+        </CardContent>
+        <CardActions>
+          <Button variant="contained" color="primary">
+            Borrow
+          </Button>
+        </CardActions>
+      </Card>
+    )
+  }
 }
+
+export default withStyles(styles)(ItemCard)

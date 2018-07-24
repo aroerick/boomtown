@@ -8,6 +8,7 @@ import CardContent from '@material-ui/core/CardContent'
 // import CardMedia from '@material-ui/core/CardMedia'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
+import ItemCard from '../../components/ItemCard'
 
 import styles from './styles'
 
@@ -23,21 +24,7 @@ const Items = ({ classes }) => {
             return `error: ${error.message}`
           }
           return items.map(item => (
-            <div key={item.id}>
-              <Card className={classes.card}>
-                <CardContent>
-                  <Typography component="h2">
-                    {item.title}
-                  </Typography>
-                  <Typography component="p">
-                    {item.description}
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button>Borrow</Button>
-                </CardActions>
-              </Card>
-            </div>
+            <ItemCard key={ item.id } item={ item }/>
           ))
         }}
       </ItemsContainer> 
