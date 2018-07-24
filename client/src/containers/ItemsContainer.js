@@ -27,7 +27,7 @@ const itemsData = ({ render }) => {
       query={ALL_ITEMS_QUERY} 
       // variables={{ "filter": null }}
     >
-      {({loading, error, data:{items}}) => render ({loading, error, items})}
+      {({loading, error, data: { items }}) => render ({loading, error, items})}
     </Query>
   )
 }
