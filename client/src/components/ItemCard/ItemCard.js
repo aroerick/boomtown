@@ -16,14 +16,12 @@ import styles from './styles'
 
 class ItemCard extends Component {
   render() {
-    console.log(this.props)
     const { classes, item } = this.props
     return (
       <Card className={classes.card}>
         <CardMedia
           className={classes.media}
           image={item.imageUrl}
-          title="Contemplative Reptile"
         />
         <CardContent>
           <Typography gutterBottom variant="headline" component="h2">

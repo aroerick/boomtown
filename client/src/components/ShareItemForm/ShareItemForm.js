@@ -12,7 +12,11 @@ import {
 class ShareItemForm extends Component {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      fileSelected: false,
+      selectedTags: [],
+      submitted: false
+    }
   }
   onSubmit = values => {
     console.log(values)
@@ -20,8 +24,44 @@ class ShareItemForm extends Component {
   validate = values => {
     console.log(values)
   }
+  getBase64Url() {
+    return new Promise(resolve => {
+      const reader = new FileReader()
+      reader.onload = e => {
+        resolve(
+          `data:${this.state.fileSelected.mimeType};base64, ${btoa(
+            e.target.result
+          )}`
+        )
+      }
+      reader.readAsBinaryString(this.state.fileSelected)
+    })
+  }
+  applyTags(tags) {
+    return (
+      tags &&
+      tags
+        .filter(tag => this.state.selectedTags.indexOf(tag.id) > -1)
+        .map(tag => ({ title: tag.title, id: tag.id }))
+    )
+  }
+  dispatchUpdate(values, tags, updateNewItem) {
+    if (!values.imageUrl && this.state.fileSelected) {
+      this.getBase64Url().then(imageUrl => {
+        updateNewItem({
+          imageUrl
+        })
+      })
+    }
+
+    updateNewItem({
+      ...values,
+      tags: this.applyTags(tags)
+    })
+  }
 
   render() {
+    const { resetImage, updateNewItem, resetNewItem } = this.props
     return (
       <Form
         onSubmit={this.onSubmit}
@@ -32,7 +72,7 @@ class ShareItemForm extends Component {
               subscription={{ values: true }}
               component={({ values }) => {
                 if (values) {
-                  this.updateNewItem(values)
+                  this.dispatchUpdate(values, tags, updateNewItem)
                 }
                 return ''
               }}
