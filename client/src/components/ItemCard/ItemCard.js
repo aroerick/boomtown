@@ -17,6 +17,7 @@ import styles from './styles'
 class ItemCard extends Component {
   render() {
     const { classes, item } = this.props
+    const itemTags = item.tags.map(tag => tag.title)
     return (
       <Card className={classes.card}>
         <CardMedia
@@ -26,6 +27,9 @@ class ItemCard extends Component {
         <CardContent>
           <Typography gutterBottom variant="headline" component="h2">
             {item.title}
+          </Typography>
+          <Typography component="p">
+            {itemTags.join(', ')}
           </Typography>
           <Typography component="p">{item.description}</Typography>
         </CardContent>
