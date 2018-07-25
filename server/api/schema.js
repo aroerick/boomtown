@@ -30,6 +30,7 @@ module.exports = gql`
 		email: String!
 		fullname: String!
 		bio: String
+		password: String!
 		items: [Item]
 		borrowed: [Item]
 	}
@@ -61,6 +62,11 @@ module.exports = gql`
 		description: String
 		tags: [AssignedTag]
 	}
+	input NewUser {
+		fullname: String!
+		email: String!
+		password: String!
+	}
 
 	type Query {
 		user(id: ID!): User
@@ -75,6 +81,12 @@ module.exports = gql`
 	#    image: upload
 			_: Boolean
 		): Item
+		signup(user: NewUser!): Boolean
+		login(
+			email: String!
+			password: String!
+		): Boolean
+		logout:Boolean
 	}
 
 `

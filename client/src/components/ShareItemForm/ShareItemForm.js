@@ -139,7 +139,7 @@ class ShareItemForm extends Component {
                     </Button>
                   )}
                 />
-                <pre>{JSON.stringify(values, 0, 2)}</pre>
+                {/* <pre>{JSON.stringify(values, 0, 2)}</pre> */}
               </form>
             )}
           />

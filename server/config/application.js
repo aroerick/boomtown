@@ -10,7 +10,9 @@ module.exports = function(app) {
   app.set('PG_USER', process.env.PG_USER || 'boomtown')
   app.set('PG_PASSWORD', process.env.PG_PASSWORD || 'boomtown')
   app.set('PG_DB', process.env.PG_DB || 'boomtown')
-  
+  app.set('JWT_COOKIE_NAME', process.env.JWT_COOKIE_NAME || 'JRRToken' )
+  app.set('JWT_SECRET', process.env.JWT_SECRET || 'blue cheese')
+
   /**
    *  @TODO: Configuration Variables
    *
@@ -48,6 +50,7 @@ module.exports = function(app) {
    *
    *  For example: app.set('PG_HOST', process.env.PG_HOST || 'localhost')
    */
+
 
   app.use(cookieParser())
 
