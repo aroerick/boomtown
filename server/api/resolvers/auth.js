@@ -92,19 +92,18 @@ module.exports = function(app) {
          *  they submitted from the login form to decrypt the 'hashed' version stored in out database.
          */
         // Use bcrypt to compare the provided password to 'hashed' password stored in your database.
-        const valid = bcrypt.compare(args.user.password, users[args.user.email].password)
+        const valid = bcrypt.compare(args.user.password, user.password)
         // -------------------------------
         if (!valid || !args.user) throw 'User was not found.'
 
         setCookie({
           tokenName: app.get('JWT_COOKIE_NAME'),
-          token: generateToken(user, app.get('JWT_SECRET')),
+          token: generateToken(args.user, app.get('JWT_SECRET')),
           res: context.req.res
         })
 
-        return {
-          id: user.id
-        }
+        return true
+
       } catch (e) {
         throw new AuthenticationError(e)
       }

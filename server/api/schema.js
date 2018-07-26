@@ -11,82 +11,84 @@ const { gql } = require('apollo-server')
  * We will create the custom Date scalar together.
  */
 module.exports = gql`
-	scalar Upload
-	scalar Date
+  scalar Upload
+  scalar Date
 
-	type Item {
-		id: ID!
-		title: String!
-		imageurl: String
-		description: String!
-		itemowner: User!
-		tags: [Tag]
-		created: Date!
-		borrower: User
-	}
+  directive @auth on OBJECT | FIELD_DEFINITION
 
-	type User {
-		id: ID!
-		email: String!
-		fullname: String!
-		bio: String
-		password: String!
-		items: [Item]
-		borrowed: [Item]
-	}
+  type Item @auth {
+    id: ID!
+    title: String!
+    imageurl: String
+    description: String!
+    itemowner: User!
+    tags: [Tag]
+    created: Date!
+    borrower: User
+  }
 
-	type Tag {
-		id: ID!
-		title: String!
-	}
+  type User @auth {
+    id: ID!
+    email: String!
+    fullname: String!
+    bio: String
+    password: String!
+    items: [Item]
+    borrowed: [Item]
+  }
 
-	type File {
-		id: ID!,
-		filename: String!
-		mimetype: String!
-		encoding: String!
-		itemid: ID!
-	}
+  type Tag @auth {
+    id: ID!
+    title: String!
+  }
 
-	input AssignedTag {
-		id: ID!
-		title: String!
-	}
+  type File @auth {
+    id: ID!
+    filename: String!
+    mimetype: String!
+    encoding: String!
+    itemid: ID!
+  }
 
-	input AssignedBorrower {
-		id: ID!
-	}
+  input AssignedTag {
+    id: ID!
+    title: String!
+  }
 
-	input NewItemInput {
-		title: String!
-		description: String
-		tags: [AssignedTag]
-	}
-	input NewUser {
-		fullname: String!
-		email: String!
-		password: String!
-	}
+  input AssignedBorrower {
+    id: ID!
+  }
 
-	type Query {
-		user(id: ID!): User
-		viewer: User
-		items(filter: ID): [Item]
-		tags: [Tag]
-	}
+  input NewItemInput {
+    title: String!
+    description: String
+    tags: [AssignedTag]
+  }
+  input NewUser {
+    fullname: String!
+    email: String!
+    password: String!
+  }
+  input AuthUser {
+	  email: String!
+	  password: String!
+  }
 
-	type Mutation {
-		addItem(
-	#    item: NewInputType!
-	#    image: upload
-			_: Boolean
-		): Item
-		signup(user: NewUser!): Boolean
-		login(
-			email: String!
-			password: String!
-		): Boolean
-		logout:Boolean
-	}
+  type Query {
+    user(id: ID!): User
+    viewer: User
+    items(filter: ID): [Item]
+    tags: [Tag]
+  }
 
+  type Mutation {
+    addItem(
+      #    item: NewInputType!
+      #    image: upload
+      _: Boolean
+    ): Item
+    signup(user: NewUser!): Boolean
+    login(user: AuthUser!): Boolean
+    logout: Boolean
+  }
 `

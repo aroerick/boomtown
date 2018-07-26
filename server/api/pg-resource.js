@@ -40,7 +40,7 @@ module.exports = function(postgres) {
 		},
 		async getUserAndPasswordForVerification(email) {
 			const findUserQuery = {
-				text: 'SELECT password FROM users WHERE email === $1', // @TODO: Authentication - Server
+				text: 'SELECT * FROM users WHERE email = $1', // @TODO: Authentication - Server
 				values: [email]
 			}
 			try {
