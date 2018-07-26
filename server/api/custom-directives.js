@@ -67,13 +67,13 @@ class AuthDirective extends SchemaDirectiveVisitor {
          * to your schema types.
          *
          */
-        if (
-          !context.token &&
-          context.req.body.operationName !== 'login' &&
-          context.req.body.operationName !== 'signup'
-        ) {
-          throw new ForbiddenError('Not Authorized.')
-        }
+        // if (
+        //   !context.token &&
+        //   context.req.body.operationName !== 'login' &&
+        //   context.req.body.operationName !== 'signup'
+        // ) {
+        //   throw new ForbiddenError('Not Authorized.')
+        // }
         return resolve.apply(this, [parent, args, context, info])
       }
     })

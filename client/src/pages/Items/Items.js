@@ -16,14 +16,14 @@ const Items = ({ classes }) => {
   return (
     <div>
         <ItemsContainer>
-        {({ itemsData: { items, loading, error } }) => {
+        {({ itemsData: { data, loading, error } }) => {
           if (loading) {
             return 'Content Loading...'
           }
           if (error) {
             return `error: ${error.message}`
           }
-          return items.map(item => (
+          return data.items.map(item => (
             <ItemCard key={ item.id } item={ item }/>
           ))
         }}

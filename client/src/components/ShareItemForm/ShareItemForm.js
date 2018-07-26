@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { FormSpy, Form, Field } from 'react-final-form'
 import { Button, TextField, Checkbox, InputLabel } from '@material-ui/core'
 import ItemsContainer from '../../containers/ItemsContainer'
@@ -17,10 +17,11 @@ class ShareItemForm extends Component {
       selectedTags: [],
       submitted: false
     }
+    this.fileInput = React.createRef()
   }
-  onSubmit = values => {
-    console.log(values)
-  }
+  // onSubmit = values => {
+  //   this.saveItem(values, addItem)
+  // }
   validate = values => {
     console.log(values)
   }
@@ -46,12 +47,35 @@ class ShareItemForm extends Component {
   //   )
   // }
   getTags = tags => {
-    if(tags) {
+    if (tags) {
       return tags.map(tag => JSON.parse(tag))
     }
     return []
   }
+  async saveItem(values, addItem) {
+    const {
+      validity,
+      files: [file]
+    } = this.fileInput.current
 
+    if (!validity.valid) return
+
+    try {
+      const itemData = {
+        ...values,
+        tags: this.getTags(values.tags)
+      }
+      await addItem.mutation({
+        variables: {
+          item: itemData,
+          image: file
+        }
+      })
+      this.setState({ done: true })
+    } catch (e) {
+      console.log(e)
+    }
+  }
   dispatchUpdate(values, updateNewItem) {
     if (!values.imageUrl && this.state.fileSelected) {
       this.getBase64Url().then(imageUrl => {
@@ -67,14 +91,16 @@ class ShareItemForm extends Component {
       tags
     })
   }
-  handleCheckbox(event) {
+  handleImageSelect(event) {
+    this.setState({ fileSelected: event.target.files[0] })
+    console.log(event.target.files[0])
   }
 
   render() {
     const { resetImage, updateNewItem, resetNewItem } = this.props
     return (
       <ItemsContainer>
-        {({ tagData: { loading, error, tags  } }) => {
+        {({ tagData: { loading, error, data }, addItem }) => {
           if (loading) {
             return 'Content Loading...'
           }
@@ -82,67 +108,88 @@ class ShareItemForm extends Component {
             return `error: ${error.message}`
           }
           return (
-          <Form
-            onSubmit={this.onSubmit}
-            validate={this.validate}
-            render={({ handleSubmit, pristine, invalid, values }) => (
-              <form onSubmit={handleSubmit}>
-                <FormSpy
-                  subscription={{ values: true }}
-                  component={({ values }) => {
-                    if (values) {
-                      this.dispatchUpdate(values, updateNewItem)
-                    }
-                    return ''
-                  }}
-                />
-                <Field
-                  render={({ input, meta }) => (
-                    <Button variant="contained" color="primary">
-                      Select an image
-                    </Button>
-                  )}
-                />
-                <Field name="title">
-                  {({ input, meta }) => (
-                    <TextField placeholder="Name your Item" {...input} />
-                  )}
-                </Field>
-                <Field name="description">
-                  {({ input, meta }) => (
-                    <TextField
-                      placeholder="Describe your Item"
-                      multiline
-                      {...input}
-                    />
-                  )}
-                </Field>
-                {tags && tags.map(tag => (
+            <Form
+              onSubmit={ values => {
+                this.saveItem(values, addItem)
+              }}
+              validate={this.validate}
+              render={({ handleSubmit, pristine, invalid, values }) => (
+                <form onSubmit={handleSubmit}>
+                  <FormSpy
+                    subscription={{ values: true }}
+                    component={({ values }) => {
+                      if (values) {
+                        this.dispatchUpdate(values, updateNewItem)
+                      }
+                      return ''
+                    }}
+                  />
                   <Field
-                    key={tag.id}
-                    name="tags"
-                    type="checkbox"
-                    value={JSON.stringify(tag)}
-                  >
+                    name="imageurl"
+                    render={({ input, meta }) => (
+                      <Fragment>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => {
+                            this.fileInput.current.click()
+                          }}
+                        >
+                          Select an image
+                        </Button>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          hidden
+                          ref={this.fileInput}
+                          onChange={event => {
+                            this.handleImageSelect(event)
+                          }}
+                        />
+                      </Fragment>
+                    )}
+                  />
+                  <Field name="title">
                     {({ input, meta }) => (
-                      <InputLabel>
-                        <Checkbox {...input} />
-                          {tag.title}
-                      </InputLabel>
+                      <TextField placeholder="Name your Item" {...input} />
                     )}
                   </Field>
-                ))}              
-                <Field
-                  render={({ input, meta }) => (
-                    <Button type="submit" variant="contained" color="primary">
-                      Share
-                    </Button>
-                  )}
-                />
-                {/* <pre>{JSON.stringify(values, 0, 2)}</pre> */}
-              </form>
-            )}
-          />
+                  <Field name="description">
+                    {({ input, meta }) => (
+                      <TextField
+                        placeholder="Describe your Item"
+                        multiline
+                        {...input}
+                      />
+                    )}
+                  </Field>
+                  {data.tags &&
+                    data.tags.map(tag => (
+                      <Field
+                        key={tag.id}
+                        name="tags"
+                        type="checkbox"
+                        value={JSON.stringify(tag)}
+                      >
+                        {({ input, meta }) => (
+                          <InputLabel>
+                            <Checkbox {...input} />
+                            {tag.title}
+                          </InputLabel>
+                        )}
+                      </Field>
+                    ))}
+                  <Field
+                    render={({ input, meta }) => (
+                      <Button type="submit" variant="contained" color="primary">
+                        Share
+                      </Button>
+                    )}
+                  />
+                  {/* <pre>{JSON.stringify(values, 0, 2)}</pre> */}
+                </form>
+              )}
+            />
           )
         }}
       </ItemsContainer>
