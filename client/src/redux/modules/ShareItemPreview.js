@@ -17,7 +17,7 @@ export const resetNewItem = () => ({
 
 const initialState = {
     imageUrl: "https://dummyimage.com/350x250/c7c7c7/919191.png&text=Please+select+an+image",
-    title: "Pickles",
+    title: "Name your item",
     tags: [],
     description: "Describe your item",
     created: new Date(),

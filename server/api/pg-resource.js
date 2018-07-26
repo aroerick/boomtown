@@ -253,6 +253,9 @@ module.exports = function(postgres) {
 								// Generate new Item query
 								// @TODO
 								// -------------------------------
+								const newItemQuery = {
+									text: ``
+								}
 
 								// Insert new Item
 								// @TODO
