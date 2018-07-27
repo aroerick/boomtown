@@ -16,31 +16,17 @@ function setCookie({ tokenName, token, res }) {
    *  2) It will only be sent via https (but we'll have to disable this in development using NODE_ENV)
    *  3) A boomtown cookie should oly be valid for 2 hours.
    */
-  // Refactor this method with the correct configuration values.
   res.cookie(tokenName, token, {
-    // @TODO: Supply the correct configuration values for our cookie here
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     maxAge: 1000 * 60 * 60 * 2
   })
-  // -------------------------------
 }
 
 function generateToken(user, secret) {
   const { id, email, fullname, bio } = user // Omit the password from the token
-  /**
-   *  @TODO: Authentication - Server
-   *
-   *  This helper function is responsible for generating the JWT token.
-   *  Here, we'll be taking a JSON object representing the user (the 'J' in JWT)
-   *  and cryptographically 'signing' it using our app's 'secret'.
-   *  The result is a cryptographic hash representing out JSON user
-   *  which can be decoded using the app secret to retrieve the stateless session.
-   */
-  // Refactor this return statement to return the cryptographic hash (the Token)
   const token = jwt.sign({ id, email, fullname, bio  }, secret, { expiresIn: '2h' });
   return token
-  // -------------------------------
 }
 
 module.exports = function(app) {
@@ -69,11 +55,11 @@ module.exports = function(app) {
 
         setCookie({
           tokenName: app.get('JWT_COOKIE_NAME'),
-          token: generateToken(args.user, app.get('JWT_SECRET')),
+          token: generateToken(user, app.get('JWT_SECRET')),
           res: context.req.res
         })
         return true
-
+        // @TODO
       } catch (e) {
         throw new AuthenticationError(e)
       }

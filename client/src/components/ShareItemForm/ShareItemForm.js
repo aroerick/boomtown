@@ -19,9 +19,6 @@ class ShareItemForm extends Component {
     }
     this.fileInput = React.createRef()
   }
-  // onSubmit = values => {
-  //   this.saveItem(values, addItem)
-  // }
   validate = values => {
     console.log(values)
   }
@@ -38,14 +35,6 @@ class ShareItemForm extends Component {
       reader.readAsBinaryString(this.state.fileSelected)
     })
   }
-  // applyTags(tags) {
-  //   return (
-  //     tags &&
-  //     tags
-  //       .filter(tag => this.state.selectedTags.indexOf(tag.id) > -1)
-  //       .map(tag => ({ title: tag.title, id: tag.id }))
-  //   )
-  // }
   getTags = tags => {
     if (tags) {
       return tags.map(tag => JSON.parse(tag))

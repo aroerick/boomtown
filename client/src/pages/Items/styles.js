@@ -1,6 +1,12 @@
 const styles = theme => ({
     root: {
-        background: theme.palette.secondary.main
+        flexGrow: 1,
+        height: '100%',
+        background: theme.palette.secondary.main,
+        [theme.breakpoints.up('sm')]:{
+            padding: theme.spacing.unit,
+            justifyContent:'flex-start'
+        }
     }
 })
 

@@ -1,17 +1,13 @@
 import { adopt } from 'react-adopt'
 import { Query, Mutation } from 'react-apollo'
 import React from 'react'
-
-// @TODO: Uncommment this line when the ViewerProvider is added to the app.
-// import { ViewerContext } from '../context/ViewerProvider'
-// -------------------------------
-
 import {
   ALL_TAGS_QUERY,
   ALL_ITEMS_QUERY,
   ALL_USER_ITEMS_QUERY,
   ADD_ITEM_MUTATION
 } from '../apollo/queries'
+import { ViewerContext } from '../context/ViewerProvider'
 
 const itemsData = ({ render }) => {
   /**
@@ -27,33 +23,26 @@ const itemsData = ({ render }) => {
       query={ALL_ITEMS_QUERY}
       // variables={{ "filter": null }}
     >
-      {({ loading, error, data }) =>
-        render({ loading, error, data })
-      }
+      {({ loading, error, data }) => render({ loading, error, data })}
     </Query>
   )
 }
 
-const userItemsData = ({ userId, render }) => {
-  /**
-   * @TODO: Use Apollo's <Query /> component to fetch all of a user's items.
-   *
-   * Note: Your query will need to retrieve only items that belong to a
-   * specific user id.
-   */
-  return (
-    <Query query={ALL_USER_ITEMS_QUERY} variables={{ id: 2 }}>
-      {({ loading, error, data }) =>
-        render({ loading, error, data })
-      }
-    </Query>
-  )
-}
+const userItemsData = ({ userId, render }) => (
+  <ViewerContext.Consumer>
+    {({ viewer }) => (
+      <Query query={ALL_USER_ITEMS_QUERY} variables={{ id: userId || viewer.id }}>
+        {({ loading, error, data }) => render({ loading, error, data })}
+      </Query>
+    )}
+  </ViewerContext.Consumer>
+)
 
 const tagData = ({ render }) => {
   /**
    * @TODO: Use Apollo's <Query /> component to fetch all the tags.
    */
+
   return (
     <Query query={ALL_TAGS_QUERY}>
       {({ loading, error, data }) => render({ loading, error, data })}
@@ -68,10 +57,11 @@ const addItem = ({ render }) => (
    * Note: Be sure to use `refetchQueries` to refresh Apollo's cache with the
    * latest items for the user.
    */
-  <Mutation
-    mutation={ADD_ITEM_MUTATION}
-  >
-  {(mutation, { loading, error, data }) => render({ mutation, loading, error, data })}
+    // refetchQueries={() => [{ query: ADD_ITEM_MUTATION}]}
+  <Mutation mutation={ADD_ITEM_MUTATION}>
+    {(mutation, { loading, error, data }) =>
+      render({ mutation, loading, error, data })
+    }
   </Mutation>
 )
 const ItemsContainer = adopt({
