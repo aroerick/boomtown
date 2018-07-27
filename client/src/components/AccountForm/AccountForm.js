@@ -8,7 +8,7 @@ import React, { Component } from 'react'
 import Typography from '@material-ui/core/Typography'
 import { Form, Field } from 'react-final-form'
 
-// import AuthContainer from '../../containers/AuthContainer'
+import AuthContainer from '../../containers/AuthContainer'
 // import validate from './helpers/validation'
 
 import styles from './styles'
@@ -26,111 +26,128 @@ class AccountForm extends Component {
 
     return (
       // @TODO: Wrap in <AuthContainer />
-      // @TODO: Wrap in Final Form <Form />
-      <Form
-        onSubmit={() => {
-          console.log('woo')
-        }}
-        validate={console.log('valid')}
-        render={({ handleSubmit, pristine, invalid, values }) => (
-          <form
-            onSubmit={() => {
-              console.log('Submitted')
-            }}
-            className={classes.accountForm}
-          >
-            {!this.state.formToggle && (
-              <FormControl fullWidth className={classes.formControl}>
-                <InputLabel htmlFor="fullname">Username</InputLabel>
-                <Field name="fullname">
-                {({ input, meta }) => (
-                  <Input
-                    id="fullname"
-                    type="text"
-                    // inputProps={{
-                    //   autoComplete: 'off'
-                    // }}
-                    {...input}
-                  />
-                )}
-                </Field>
-              </FormControl>
-            )}
-            <FormControl fullWidth className={classes.formControl}>
-              <InputLabel htmlFor="email">Email</InputLabel>
-              <Field name="email">
-              {({ input, meta }) => (
-                <Input
-                  id="email"
-                  type="text"
-                  // inputProps={{
-                  //   autoComplete: 'off'
-                  // }}
-                  {...input}
-                />
-              )}
-              </Field>
-            </FormControl>
-            <FormControl fullWidth className={classes.formControl}>
-              <InputLabel htmlFor="password">Password</InputLabel>
-              <Field name="password">
-              {({ input, meta }) => (
-                <Input
-                  id="password"
-                  type="password"
-                  inputProps={{
-                    autoComplete: 'off'
-                  }}
-                  {...input}
-                />
-                )}
-              </Field>
-            </FormControl>
-            <FormControl className={classes.formControl}>
-              <Grid
-                container
-                direction="row"
-                justify="space-between"
-                alignItems="center"
-              >
-                <Button
-                  type="submit"
-                  className={classes.formButton}
-                  variant="contained"
-                  size="large"
-                  color="secondary"
-                  disabled={
-                    false // @TODO: This prop should depend on pristine or valid state of form
+      <AuthContainer>
+        {({ signup, login }) => (
+          <Form
+            onSubmit={
+              this.state.formToggle
+                ? () => {
+                    login.mutation({
+                      variables: {
+                        user: {
+                          email: 'adam',
+                          password: 'adam'
+                        }
+                      }
+                    })
                   }
-                >
-                  {this.state.formToggle ? 'Enter' : 'Create Account'}
-                </Button>
-                <Typography>
-                  <button
-                    className={classes.formToggle}
-                    type="button"
-                    onClick={() => {
-                      // @TODO: Reset the form on submit
-                      this.setState({
-                        formToggle: !this.state.formToggle
-                      })
-                    }}
+                : () => {
+                    signup.mutation({
+                      variables: {
+                        user: {
+                          fullname: 'adam',
+                          email: 'adam',
+                          password: 'adam'
+                        }
+                      }
+                    })
+                  }
+            }
+            validate={console.log('valid')}
+            render={({ handleSubmit, pristine, invalid, values }) => (
+              <form onSubmit={handleSubmit} className={classes.accountForm}>
+                {!this.state.formToggle && (
+                  <FormControl fullWidth className={classes.formControl}>
+                    <InputLabel htmlFor="fullname">Username</InputLabel>
+                    <Field name="fullname">
+                      {({ input, meta }) => (
+                        <Input
+                          id="fullname"
+                          type="text"
+                          // inputProps={{
+                          //   autoComplete: 'off'
+                          // }}
+                          {...input}
+                        />
+                      )}
+                    </Field>
+                  </FormControl>
+                )}
+                <FormControl fullWidth className={classes.formControl}>
+                  <InputLabel htmlFor="email">Email</InputLabel>
+                  <Field name="email">
+                    {({ input, meta }) => (
+                      <Input
+                        id="email"
+                        type="text"
+                        // inputProps={{
+                        //   autoComplete: 'off'
+                        // }}
+                        {...input}
+                      />
+                    )}
+                  </Field>
+                </FormControl>
+                <FormControl fullWidth className={classes.formControl}>
+                  <InputLabel htmlFor="password">Password</InputLabel>
+                  <Field name="password">
+                    {({ input, meta }) => (
+                      <Input
+                        id="password"
+                        type="password"
+                        inputProps={{
+                          autoComplete: 'off'
+                        }}
+                        {...input}
+                      />
+                    )}
+                  </Field>
+                </FormControl>
+                <FormControl className={classes.formControl}>
+                  <Grid
+                    container
+                    direction="row"
+                    justify="space-between"
+                    alignItems="center"
                   >
-                    {this.state.formToggle
-                      ? 'Create an account.'
-                      : 'Login to existing account.'}
-                  </button>
+                    <Button
+                      type="submit"
+                      className={classes.formButton}
+                      variant="contained"
+                      size="large"
+                      color="secondary"
+                      disabled={
+                        false // @TODO: This prop should depend on pristine or valid state of form
+                      }
+                    >
+                      {this.state.formToggle ? 'Enter' : 'Create Account'}
+                    </Button>
+                    <Typography>
+                      <button
+                        className={classes.formToggle}
+                        type="button"
+                        onClick={() => {
+                          // @TODO: Reset the form on submit
+                          this.setState({
+                            formToggle: !this.state.formToggle
+                          })
+                        }}
+                      >
+                        {this.state.formToggle
+                          ? 'Create an account.'
+                          : 'Login to existing account.'}
+                      </button>
+                    </Typography>
+                  </Grid>
+                </FormControl>
+                <Typography className={classes.errorMessage}>
+                  {/* @TODO: Display sign-up and login errors */}
                 </Typography>
-              </Grid>
-            </FormControl>
-            <Typography className={classes.errorMessage}>
-              {/* @TODO: Display sign-up and login errors */}
-            </Typography>
-          </form>
+              </form>
+            )}
+          />
         )}
-      />
-      // @TODO: Close Final Form <Form />
-      // @TODO: Close <AuthContainer />
+      </AuthContainer>
     )
   }
 }
