@@ -37,7 +37,11 @@ class ShareItemForm extends Component {
   }
   getTags = tags => {
     if (tags) {
-      return tags.map(tag => JSON.parse(tag))
+      return tags.map(tag => {
+        tag = JSON.parse(tag)
+        delete tag.__typename
+        return tag
+      })
     }
     return []
   }
@@ -48,11 +52,11 @@ class ShareItemForm extends Component {
     } = this.fileInput.current
 
     if (!validity.valid) return
-
+    const tags = this.getTags(values.tags)
     try {
       const itemData = {
         ...values,
-        tags: this.getTags(values.tags)
+        tags
       }
       await addItem.mutation({
         variables: {
@@ -175,7 +179,6 @@ class ShareItemForm extends Component {
                       </Button>
                     )}
                   />
-                  {/* <pre>{JSON.stringify(values, 0, 2)}</pre> */}
                 </form>
               )}
             />

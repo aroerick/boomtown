@@ -250,25 +250,27 @@ module.exports = function(postgres) {
               imageStream.on('end', async () => {
                 // Image has been converted, begin saving things
                 const { title, description, tags } = item
-
+            
                 // Generate new Item query
                 // @TODO
                 // -------------------------------
                 const newItemQuery = {
                   text: `INSERT INTO items (title, description, ownerid) VALUES ($1, $2, $3) RETURNING *`,
-                  values: []
+                  values: [title, description, user.id]
                 }
-
                 // Insert new Item
                 // @TODO
                 // -------------------------------
-                client.query(newItemQuery)
+                const newItem =  await client.query(newItemQuery)
+                console.log(newItem.rows)
+
+                const itemid = newItem.rows[0].id
 
                 const imageUploadQuery = {
                   text:
                     'INSERT INTO uploads (itemid, filename, mimetype, encoding, data) VALUES ($1, $2, $3, $4, $5) RETURNING *',
                   values: [
-                    // itemid,
+                    itemid,
                     image.filename,
                     image.mimetype,
                     'base64',
@@ -281,18 +283,21 @@ module.exports = function(postgres) {
 
                 // Generate tag relationships query (use the'tagsQueryString' helper function provided)
                 // @TODO
+                // console.log(itemid)
                 const tagsQuery = {
-                  text: `INSERT INTO itemtags (itemid, tagid) VALUES ${
-                    tagsQueryString(/* ?? */)
-                  }`
+                  text: `INSERT INTO itemtags (tagid, itemid) VALUES ${
+                    tagsQueryString([...tags], itemid, '') 
+                  }`,
+                  values: tags.map(tag => tag.id)
+              
                 }
+
                 // -------------------------------
 
                 // Insert tags
                 // @TODO
-								// -------------------------------
-								await client.query(tagsQuery)
-
+                // -------------------------------
+                await client.query(tagsQuery)
 
                 // Commit the entire transaction!
                 client.query('COMMIT', err => {
@@ -302,7 +307,7 @@ module.exports = function(postgres) {
                   // release the client back to the pool
                   done()
                   // Uncomment this resolve statement when you're ready!
-                  // resolve(newItem.rows[0])
+                  resolve(newItem.rows[0])
                   // -------------------------------
                 })
               })

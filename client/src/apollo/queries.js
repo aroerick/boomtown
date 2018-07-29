@@ -8,7 +8,6 @@ const ItemFields = gql`
   fragment ItemFields on Item {
     id
     title
-    imageurl
     description
     created
     tags {
@@ -73,13 +72,14 @@ export const ALL_TAGS_QUERY = gql`
   query {
     tags {
       title
+      id
     }
   }
 `
 
 export const ADD_ITEM_MUTATION = gql`
   mutation addItem($item: NewItemInput!, $image: Upload!) {
-    item(item: $item, image: $image) {
+    addItem(item: $item, image: $image) {
       id
     }
   }

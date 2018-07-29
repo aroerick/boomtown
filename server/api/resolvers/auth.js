@@ -58,7 +58,9 @@ module.exports = function(app) {
           token: generateToken(user, app.get('JWT_SECRET')),
           res: context.req.res
         })
-        return true
+        return {
+          id: user.id
+        }
         // @TODO
       } catch (e) {
         throw new AuthenticationError(e)

@@ -31,24 +31,17 @@ class AccountForm extends Component {
           <Form
             onSubmit={
               this.state.formToggle
-                ? () => {
+                ? values => {
                     login.mutation({
                       variables: {
-                        user: {
-                          email: 'adam',
-                          password: 'adam'
-                        }
+                        user: values
                       }
                     })
                   }
-                : () => {
+                : values => {
                     signup.mutation({
                       variables: {
-                        user: {
-                          fullname: 'adam',
-                          email: 'adam',
-                          password: 'adam'
-                        }
+                        user: values
                       }
                     })
                   }
