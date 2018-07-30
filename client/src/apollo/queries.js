@@ -8,6 +8,7 @@ const ItemFields = gql`
   fragment ItemFields on Item {
     id
     title
+    imageurl
     description
     created
     tags {

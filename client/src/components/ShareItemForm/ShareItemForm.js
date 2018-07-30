@@ -86,7 +86,6 @@ class ShareItemForm extends Component {
   }
   handleImageSelect(event) {
     this.setState({ fileSelected: event.target.files[0] })
-    console.log(event.target.files[0])
   }
 
   render() {
@@ -190,7 +189,6 @@ class ShareItemForm extends Component {
 }
 const mapDispatchToProps = dispatch => ({
   updateNewItem(item) {
-    console.log(item)
     dispatch(updateNewItem(item))
   },
   resetNewItem() {

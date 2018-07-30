@@ -39,10 +39,10 @@ const Home = ({ classes }) => {
             gutterBottom
             className={classes.subheading}
           >
-            Boomtown
+            Cheesetown
           </Typography>
           <Typography variant="display4" className={classes.headline}>
-            Share. Borrow. Prosper.
+            Cheese. Cheese. Cheese.
           </Typography>
         </Grid>
         <Grid item xs={12} sm={12} md={6}>

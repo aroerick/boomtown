@@ -19,7 +19,7 @@ const Items = ({ classes }) => {
               return `error: ${error.message}`
             }
             return data.items.map(item => (
-              <Grid key={item.id} item xs={12} md={6} lg={4}>
+              <Grid key={item.id} item xs={12} sm={6} lg={4}>
                 <ItemCard item={item} />
               </Grid>
             ))

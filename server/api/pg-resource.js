@@ -91,109 +91,62 @@ module.exports = function(postgres) {
       return user.rows[0]
       // -------------------------------
     },
-    // async getItems(idToOmit) {
-    //   const items = await postgres.query({
-    //     /**
-    //      *  @TODO: Advanced queries
-    //      *
-    //      *  Get all Items. If the idToOmit parameter has a value,
-    //      *  the query should only return Items were the ownerid column
-    //      *  does not contain the 'idToOmit'
-    //      *
-    //      *  Hint: You'll need to use a conditional AND and WHERE clause
-    //      *  to your query text using string interpolation
-    //      */
-
-    //     text: `SELECT * FROM items WHERE ownerid != $1 AND borrowerid IS NULL`,
-    //     values: idToOmit ? [idToOmit] : []
-    //     // values: [idToOmit]
-    //   })
-    //   return items.rows
-    // },
     async getItems(idToOmit) {
-      let text = `SELECT * FROM items`
-      if (idToOmit) {
-        text = `SELECT * FROM items
-				WHERE ownerid <> $1 AND borrowerid IS NULL`
-      }
-
-      const query = {
-        text: text,
-        values: idToOmit ? [idToOmit] : []
-      }
       try {
-        const items = await postgres.query(query)
+        const items = await postgres.query({
+          text: `SELECT item.id, item.title, item.description, item.created, item.ownerid, item.borrowerid, up.data as imageurl 
+          FROM items item
+          INNER JOIN uploads up
+          ON up.itemid = item.id
+          WHERE (ownerid != $1 AND borrowerid IS NULL) OR ($1 IS NULL)`,
+          values: [idToOmit]
+        })
+        if (!items) throw 'No Cheese.'
         return items.rows
-      } catch (error) {
-        throw 'No Items Found'
+      } catch (e) {
+        throw 'No Cheese.'
       }
     },
-    // async getItemsForUser(id) {
-    //   const items = await postgres.query({
-    //     /**
-    //      *  @TODO: Advanced queries
-    //      *  Get all Items. Hint: You'll need to use a LEFT INNER JOIN among others
-    //      */
-    //     text: `SELECT *
-    //     FROM items
-    //       INNER JOIN users
-    //       ON items.ownerid = users.id
-    //     WHERE users.id = $1;`,
-    //     values: [id]
-    //   })
-    //   return items.rows
-    // },
     async getItemsForUser(id) {
+      try {
+        const items = await postgres.query({
+          text: `SELECT item.id, item.title, item.description, item.created, item.ownerid, item.borrowerid, up.data as imageurl 
+          FROM items item
+          INNER JOIN uploads up
+          ON up.itemid = item.id
+          WHERE ownerid = $1`,
+          values: [id]
+        })
+        if (!items) throw 'No Cheese.'
+        return items.rows
+      } catch (e) {
+        throw 'No Cheese.'
+      }
+    },
+    async getBorrowedItemsForUser(id) {
       try {
         const items = await postgres.query({
           /**
            *  @TODO: Advanced queries
            *  Get all Items. Hint: You'll need to use a LEFT INNER JOIN among others
            */
-          text: `SELECT * FROM items WHERE ownerid = $1`,
+          text: `SELECT item.id, item.title,item.description,item.created, item.ownerid, item.borrowerid, up.data as imageurl 
+          FROM items item
+          INNER JOIN uploads up
+          ON up.itemid = item.id 
+          WHERE borrowerid = $1`,
           values: [id]
         })
+        if (!items) throw 'No Cheese.'
         return items.rows
-      } catch (error) {
-        throw 'No Items Found'
+      } catch (e) {
+        throw 'No Cheese.'
       }
-    },
-    async getBorrowedItemsForUser(id) {
-      const items = await postgres.query({
-        /**
-         *  @TODO: Advanced queries
-         *  Get all Items. Hint: You'll need to use a LEFT INNER JOIN among others
-         */
-        text: `SELECT *
-				FROM items 
-					INNER JOIN users
-					ON items.borrowerid = users.id
-				WHERE users.id = $1;`,
-        values: [id]
-      })
-      return items.rows
     },
     async getTags() {
       const tags = await postgres.query(`SELECT * FROM tags`)
       return tags.rows
     },
-    // async getTagsForItem(id) {
-    //   const tagsQuery = {
-    //     text: `SELECT * as tags
-    //     FROM
-    //       items
-    //       INNER JOIN itemtags
-    //         ON items.id = itemtags.itemid
-    //       INNER JOIN tags
-    //         ON itemtags.tagid = tags.id
-    //     WHERE
-    //       items.id = $1;`, // @TODO: Advanced queries
-    //     values: [id]
-    //   }
-
-    //   const tags = await postgres.query(tagsQuery)
-    //   return tags.rows
-    // },
     async getTagsForItem(id) {
       const tagsQuery = {
         text: `SELECT item.itemid, t.id, t.title 
@@ -250,7 +203,7 @@ module.exports = function(postgres) {
               imageStream.on('end', async () => {
                 // Image has been converted, begin saving things
                 const { title, description, tags } = item
-            
+
                 // Generate new Item query
                 // @TODO
                 // -------------------------------
@@ -261,8 +214,7 @@ module.exports = function(postgres) {
                 // Insert new Item
                 // @TODO
                 // -------------------------------
-                const newItem =  await client.query(newItemQuery)
-                console.log(newItem.rows)
+                const newItem = await client.query(newItemQuery)
 
                 const itemid = newItem.rows[0].id
 
@@ -283,13 +235,13 @@ module.exports = function(postgres) {
 
                 // Generate tag relationships query (use the'tagsQueryString' helper function provided)
                 // @TODO
-                // console.log(itemid)
                 const tagsQuery = {
-                  text: `INSERT INTO itemtags (tagid, itemid) VALUES ${
-                    tagsQueryString([...tags], itemid, '') 
-                  }`,
+                  text: `INSERT INTO itemtags (tagid, itemid) VALUES ${tagsQueryString(
+                    [...tags],
+                    itemid,
+                    ''
+                  )}`,
                   values: tags.map(tag => tag.id)
-              
                 }
 
                 // -------------------------------
