@@ -101,7 +101,7 @@ class ShareItemForm extends Component {
           }
           return (
             <Form
-              onSubmit={ values => {
+              onSubmit={values => {
                 this.saveItem(values, addItem)
               }}
               validate={this.validate}
