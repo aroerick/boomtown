@@ -4,12 +4,11 @@ import FormControl from '@material-ui/core/FormControl'
 import Grid from '@material-ui/core/Grid'
 import Input from '@material-ui/core/Input'
 import InputLabel from '@material-ui/core/InputLabel'
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import Typography from '@material-ui/core/Typography'
 import { Form, Field } from 'react-final-form'
-
 import AuthContainer from '../../containers/AuthContainer'
-// import validate from './helpers/validation'
+import validate from './helpers/validation'
 
 import styles from './styles'
 
@@ -25,7 +24,6 @@ class AccountForm extends Component {
     const { classes } = this.props
 
     return (
-      // @TODO: Wrap in <AuthContainer />
       <AuthContainer>
         {({ signup, login }) => (
           <Form
@@ -46,7 +44,7 @@ class AccountForm extends Component {
                     })
                   }
             }
-            validate={console.log('valid')}
+            validate={validate}
             render={({ handleSubmit, pristine, invalid, values }) => (
               <form onSubmit={handleSubmit} className={classes.accountForm}>
                 {!this.state.formToggle && (
@@ -54,14 +52,15 @@ class AccountForm extends Component {
                     <InputLabel htmlFor="fullname">Username</InputLabel>
                     <Field name="fullname">
                       {({ input, meta }) => (
-                        <Input
-                          id="fullname"
-                          type="text"
-                          // inputProps={{
-                          //   autoComplete: 'off'
-                          // }}
-                          {...input}
-                        />
+                        <Fragment>
+                          <Input id="fullname" type="text" {...input} />
+                          {meta.error &&
+                            meta.touched && (
+                              <Typography className={classes.errorMessage}>
+                                {meta.error}
+                              </Typography>
+                            )}
+                        </Fragment>
                       )}
                     </Field>
                   </FormControl>
@@ -70,14 +69,15 @@ class AccountForm extends Component {
                   <InputLabel htmlFor="email">Email</InputLabel>
                   <Field name="email">
                     {({ input, meta }) => (
-                      <Input
-                        id="email"
-                        type="text"
-                        // inputProps={{
-                        //   autoComplete: 'off'
-                        // }}
-                        {...input}
-                      />
+                      <Fragment>
+                        <Input id="email" type="text" {...input} />
+                        {meta.error &&
+                          meta.touched && (
+                            <Typography className={classes.errorMessage}>
+                              {meta.error}
+                            </Typography>
+                          )}
+                      </Fragment>
                     )}
                   </Field>
                 </FormControl>
@@ -85,14 +85,22 @@ class AccountForm extends Component {
                   <InputLabel htmlFor="password">Password</InputLabel>
                   <Field name="password">
                     {({ input, meta }) => (
-                      <Input
-                        id="password"
-                        type="password"
-                        inputProps={{
-                          autoComplete: 'off'
-                        }}
-                        {...input}
-                      />
+                      <Fragment>
+                        <Input
+                          id="password"
+                          type="password"
+                          inputProps={{
+                            autoComplete: 'off'
+                          }}
+                          {...input}
+                        />
+                        {meta.error &&
+                          meta.touched && (
+                            <Typography className={classes.errorMessage}>
+                              {meta.error}
+                            </Typography>
+                          )}
+                      </Fragment>
                     )}
                   </Field>
                 </FormControl>
@@ -110,7 +118,7 @@ class AccountForm extends Component {
                       size="large"
                       color="secondary"
                       disabled={
-                        false // @TODO: This prop should depend on pristine or valid state of form
+                        pristine // @TODO: This prop should depend on pristine or valid state of form
                       }
                     >
                       {this.state.formToggle ? 'Enter' : 'Create Account'}
@@ -133,9 +141,9 @@ class AccountForm extends Component {
                     </Typography>
                   </Grid>
                 </FormControl>
-                <Typography className={classes.errorMessage}>
-                  {/* @TODO: Display sign-up and login errors */}
-                </Typography>
+                {/* <Typography className={classes.errorMessage}>
+                  {validate.errors}
+                </Typography> */}
               </form>
             )}
           />
