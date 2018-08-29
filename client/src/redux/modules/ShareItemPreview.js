@@ -16,12 +16,11 @@ export const resetNewItem = () => ({
 })
 
 const initialState = {
-    imageUrl: "https://dummyimage.com/350x250/c7c7c7/919191.png&text=Please+select+an+image",
+    imageurl: "https://dummyimage.com/350x250/c7c7c7/919191.png&text=Please+select+an+image",
     title: "Name your item",
     tags: [],
     description: "Describe your item",
     created: new Date(),
-    itemowner: {}
 }
 
 export default (state = initialState, action) => {
@@ -29,7 +28,7 @@ export default (state = initialState, action) => {
         case RESET_IMAGE: {
             return {
                 ...state,
-                imageUrl: initialState.imageUrl
+                imageurl: initialState.imageurl
             }
         }
         case UPDATE_NEW_ITEM: {

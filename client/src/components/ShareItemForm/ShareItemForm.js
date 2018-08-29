@@ -71,10 +71,10 @@ class ShareItemForm extends Component {
     }
   }
   dispatchUpdate(values, updateNewItem) {
-    if (!values.imageUrl && this.state.fileSelected) {
-      this.getBase64Url().then(imageUrl => {
+    if (!values.imageurl && this.state.fileSelected) {
+      this.getBase64Url().then(imageurl => {
         updateNewItem({
-          imageUrl
+          imageurl
         })
       })
     }
@@ -91,6 +91,7 @@ class ShareItemForm extends Component {
 
   render() {
     const { resetImage, updateNewItem, resetNewItem } = this.props
+    const { fileSelected } = this.state
     return (
       <ItemsContainer>
         {({ tagData: { loading, error, data }, addItem }) => {
@@ -124,11 +125,18 @@ class ShareItemForm extends Component {
                         <Button
                           variant="contained"
                           color="primary"
-                          onClick={() => {
-                            this.fileInput.current.click()
-                          }}
+                          onClick={
+                            fileSelected
+                              ? () => {
+                                this.setState({fileSelected: false})
+                                this.fileInput.current.value = ''
+                                resetImage()}
+                              : () => {
+                                  this.fileInput.current.click()
+                                }
+                          }
                         >
-                          Select an image
+                          { fileSelected ? 'Remove Image' : 'Select an image'}
                         </Button>
                         <input
                           type="file"
@@ -172,13 +180,9 @@ class ShareItemForm extends Component {
                         )}
                       </Field>
                     ))}
-                  <Field
-                    render={({ input, meta }) => (
-                      <Button type="submit" variant="contained" color="primary">
-                        Share
-                      </Button>
-                    )}
-                  />
+                  <Button type="submit" variant="contained" color="primary">
+                    Share
+                  </Button>
                 </form>
               )}
             />

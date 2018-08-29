@@ -12,7 +12,7 @@ import { ViewerContext } from '../context/ViewerProvider'
 const itemsData = ({ render }) => (
   <ViewerContext.Consumer>
     {({ viewer }) => (
-      <Query query={ALL_ITEMS_QUERY} variables={{ id: viewer.id }}>
+      <Query query={ALL_ITEMS_QUERY} variables={{ filter: viewer.id }}>
         {({ loading, error, data }) => render({ loading, error, data })}
       </Query>
     )}
@@ -51,12 +51,20 @@ const addItem = ({ render }) => (
    * Note: Be sure to use `refetchQueries` to refresh Apollo's cache with the
    * latest items for the user.
    */
-  // refetchQueries={() => [{ query: ADD_ITEM_MUTATION}]}
-  <Mutation mutation={ADD_ITEM_MUTATION}>
-    {(mutation, { loading, error, data }) =>
-      render({ mutation, loading, error, data })
-    }
-  </Mutation>
+  <ViewerContext.Consumer>
+    {({ viewer }) => (
+      <Mutation
+        mutation={ADD_ITEM_MUTATION}
+        refetchQueries={result => [
+          { query: ALL_USER_ITEMS_QUERY, variables: { id: viewer.id } }
+        ]}
+      >
+        {(mutation, { loading, error, data }) =>
+          render({ mutation, loading, error, data })
+        }
+      </Mutation>
+    )}
+  </ViewerContext.Consumer>
 )
 const ItemsContainer = adopt({
   // @TODO: Uncomment each line as you write the corresponding query.
