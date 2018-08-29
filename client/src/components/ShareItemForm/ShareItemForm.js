@@ -8,6 +8,7 @@ import {
   updateNewItem,
   resetNewItem
 } from '../../redux/modules/ShareItemPreview'
+import PropTypes from 'prop-types'
 
 class ShareItemForm extends Component {
   constructor(props) {
@@ -187,6 +188,13 @@ class ShareItemForm extends Component {
     )
   }
 }
+
+ShareItemForm.propTypes = {
+  resetImage: PropTypes.func.isRequired,
+  updateNewItem: PropTypes.func.isRequired,
+  resetNewItem: PropTypes.func.isRequired
+}
+
 const mapDispatchToProps = dispatch => ({
   updateNewItem(item) {
     dispatch(updateNewItem(item))

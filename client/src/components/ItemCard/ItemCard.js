@@ -13,6 +13,7 @@ import styles from './styles'
 import { Link } from 'react-router-dom'
 import Gravatar from 'react-gravatar'
 import moment from 'moment'
+import PropTypes from 'prop-types'
 
 
 class ItemCard extends Component {
@@ -50,6 +51,11 @@ class ItemCard extends Component {
       </Card>
     )
   }
+}
+
+ItemCard.propTypes = {
+  classes: PropTypes.object.isRequired,
+  item: PropTypes.object.isRequired
 }
 
 export default withStyles(styles)(ItemCard)

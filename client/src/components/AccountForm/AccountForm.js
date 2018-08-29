@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography'
 import { Form, Field } from 'react-final-form'
 import AuthContainer from '../../containers/AuthContainer'
 import validate from './helpers/validation'
+import PropTypes from 'prop-types'
 
 import styles from './styles'
 
@@ -45,7 +46,7 @@ class AccountForm extends Component {
                   }
             }
             validate={validate}
-            render={({ handleSubmit, pristine, invalid, values }) => (
+            render={({ handleSubmit, pristine, invalid, submitting, values }) => (
               <form onSubmit={handleSubmit} className={classes.accountForm}>
                 {!this.state.formToggle && (
                   <FormControl fullWidth className={classes.formControl}>
@@ -118,7 +119,7 @@ class AccountForm extends Component {
                       size="large"
                       color="secondary"
                       disabled={
-                        pristine // @TODO: This prop should depend on pristine or valid state of form
+                        pristine || invalid || submitting // @TODO: This prop should depend on pristine or valid state of form
                       }
                     >
                       {this.state.formToggle ? 'Enter' : 'Create Account'}
@@ -151,6 +152,10 @@ class AccountForm extends Component {
       </AuthContainer>
     )
   }
+}
+
+AccountForm.propTypes = {
+  classes: PropTypes.object.isRequired
 }
 
 export default withStyles(styles)(AccountForm)
