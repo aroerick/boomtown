@@ -68,17 +68,17 @@ module.exports = function(app) {
        *
        */
       // @TODO: Uncomment these lines after you define the User type with these fields
-      items(parent, { id }, { pgResource }, info) {
+      items(parent, args, { pgResource }, info) {
         try {
-          const items = pgResource.getItemsForUser(id)
+          const items = pgResource.getItemsForUser(parent.id)
           return items
         } catch (e) {
           throw new ApolloError(e)
         }
       },
-      borrowed (parent, { id }, { pgResource }, info) {
+      borrowed (parent, args, { pgResource }, info) {
         try {
-          const borrowed = pgResource.getBorrowedItemsForUser(id)
+          const borrowed = pgResource.getBorrowedItemsForUser(parent.id)
           return borrowed
         } catch (e) {
           throw new ApolloError(e)
