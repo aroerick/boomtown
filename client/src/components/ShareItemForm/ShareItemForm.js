@@ -46,7 +46,7 @@ class ShareItemForm extends Component {
     }
     return []
   }
-  async saveItem(values, addItem) {
+  async saveItem(values, addItem, form) {
     const {
       validity,
       files: [file]
@@ -66,6 +66,9 @@ class ShareItemForm extends Component {
         }
       })
       this.setState({ done: true })
+      this.props.resetNewItem()
+      this.props.resetImage()
+      form.reset()
     } catch (e) {
       console.log(e)
     }
@@ -107,8 +110,8 @@ class ShareItemForm extends Component {
                 this.saveItem(values, addItem)
               }}
               validate={this.validate}
-              render={({ handleSubmit, pristine, invalid, values }) => (
-                <form onSubmit={handleSubmit}>
+              render={({ handleSubmit, pristine, invalid, values, form }) => (
+                <form onSubmit={() => handleSubmit(form)}>
                   <FormSpy
                     subscription={{ values: true }}
                     component={({ values }) => {

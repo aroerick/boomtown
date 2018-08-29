@@ -72,15 +72,7 @@ module.exports = function(app) {
         const user = await context.pgResource.getUserAndPasswordForVerification(
           args.user.email
         )
-
-        /**
-         *  @TODO: Authentication - Server
-         *
-         *  To verify the user has provided the correct password, we'll use the provided password
-         *  they submitted from the login form to decrypt the 'hashed' version stored in out database.
-         */
-        // Use bcrypt to compare the provided password to 'hashed' password stored in your database.
-        const valid = bcrypt.compare(args.user.password, user.password)
+        const valid = await bcrypt.compare(args.user.password, user.password)
         // -------------------------------
         if (!valid || !args.user) throw 'User was not found.'
 

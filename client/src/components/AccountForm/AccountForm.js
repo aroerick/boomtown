@@ -142,9 +142,10 @@ class AccountForm extends Component {
                     </Typography>
                   </Grid>
                 </FormControl>
-                {/* <Typography className={classes.errorMessage}>
-                  {validate.errors}
-                </Typography> */}
+                <Typography className={classes.errorMessage}>
+                  {login.error && 'A User with that email or password does not exist'}
+                  {signup.error && 'Username taken'}
+                </Typography>
               </form>
             )}
           />

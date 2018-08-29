@@ -38,9 +38,7 @@ export default (state = initialState, action) => {
             }
         }
         case RESET_NEW_ITEM: {
-            return {
-                ...initialState
-            }
+            return initialState
         }
         default: {
             return state
