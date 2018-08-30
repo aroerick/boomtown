@@ -1,14 +1,24 @@
 import React, { Component, Fragment } from 'react'
 import { FormSpy, Form, Field } from 'react-final-form'
-import { Button, TextField, Checkbox, InputLabel } from '@material-ui/core'
+import {
+  Button,
+  TextField,
+  Checkbox,
+  InputLabel,
+  Typography,
+  FormControl
+} from '@material-ui/core'
 import ItemsContainer from '../../containers/ItemsContainer'
 import { connect } from 'react-redux'
+import { withStyles } from '@material-ui/core/styles'
 import {
   resetImage,
   updateNewItem,
   resetNewItem
 } from '../../redux/modules/ShareItemPreview'
 import PropTypes from 'prop-types'
+import validate from './helpers/validation'
+import styles from './styles'
 
 class ShareItemForm extends Component {
   constructor(props) {
@@ -20,8 +30,19 @@ class ShareItemForm extends Component {
     }
     this.fileInput = React.createRef()
   }
-  validate = values => {
+  validate(values) {
     console.log(values)
+    const errors = {}
+    if (!values.description) {
+      errors.description = 'Required'
+    }
+    if (!values.title) {
+      errors.title = 'Required'
+    }
+    if (!values.tags || values.tags.length === 0) {
+      errors.tags = 'Select at least one tag'
+    }
+    return errors
   }
   getBase64Url() {
     return new Promise(resolve => {
@@ -93,7 +114,7 @@ class ShareItemForm extends Component {
   }
 
   render() {
-    const { resetImage, updateNewItem, resetNewItem } = this.props
+    const { resetImage, updateNewItem, resetNewItem, classes } = this.props
     const { fileSelected } = this.state
     return (
       <ItemsContainer>
@@ -109,7 +130,7 @@ class ShareItemForm extends Component {
               onSubmit={values => {
                 this.saveItem(values, addItem)
               }}
-              validate={this.validate}
+              validate={validate}
               render={({ handleSubmit, pristine, invalid, values, form }) => (
                 <form onSubmit={() => handleSubmit(form)}>
                   <FormSpy
@@ -121,71 +142,111 @@ class ShareItemForm extends Component {
                       return ''
                     }}
                   />
-                  <Field
-                    name="imageurl"
-                    render={({ input, meta }) => (
-                      <Fragment>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={
-                            fileSelected
-                              ? () => {
-                                this.setState({fileSelected: false})
-                                this.fileInput.current.value = ''
-                                resetImage()}
-                              : () => {
-                                  this.fileInput.current.click()
-                                }
-                          }
-                        >
-                          { fileSelected ? 'Remove Image' : 'Select an image'}
-                        </Button>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          hidden
-                          ref={this.fileInput}
-                          onChange={event => {
-                            this.handleImageSelect(event)
-                          }}
-                        />
-                      </Fragment>
-                    )}
-                  />
-                  <Field name="title">
-                    {({ input, meta }) => (
-                      <TextField placeholder="Name your Item" {...input} />
-                    )}
-                  </Field>
-                  <Field name="description">
-                    {({ input, meta }) => (
-                      <TextField
-                        placeholder="Describe your Item"
-                        multiline
-                        {...input}
-                      />
-                    )}
-                  </Field>
+                  <FormControl>
+                    <Field
+                      name="imageurl"
+                      render={({ input, meta }) => (
+                        <Fragment>
+                          <Button
+                            variant="contained"
+                            color={fileSelected ? 'default' : 'primary'}
+                            variant={fileSelected ? 'outlined' : 'contained'}
+                            onClick={
+                              fileSelected
+                                ? () => {
+                                    this.setState({ fileSelected: false })
+                                    this.fileInput.current.value = ''
+                                    resetImage()
+                                  }
+                                : () => {
+                                    this.fileInput.current.click()
+                                  }
+                            }
+                          >
+                            {fileSelected ? 'Remove Image' : 'Select an image'}
+                          </Button>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            hidden
+                            ref={this.fileInput}
+                            onChange={event => {
+                              this.handleImageSelect(event)
+                            }}
+                          />
+                        </Fragment>
+                      )}
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <Field name="title">
+                      {({ input, meta }) => (
+                        <Fragment>
+                          <TextField placeholder="Name your Item" {...input} />
+                          {meta.error &&
+                            meta.touched && (
+                              <Typography className={classes.errorMessage}>
+                                {meta.error}
+                              </Typography>
+                            )}
+                        </Fragment>
+                      )}
+                    </Field>
+                  </FormControl>
+                  <FormControl>
+                    <Field name="description">
+                      {({ input, meta }) => (
+                        <Fragment>
+                          <TextField
+                            placeholder="Describe your Item"
+                            multiline
+                            {...input}
+                          />
+                          {meta.error &&
+                            meta.touched && (
+                              <Typography className={classes.errorMessage}>
+                                {meta.error}
+                              </Typography>
+                            )}
+                        </Fragment>
+                      )}
+                    </Field>
+                  </FormControl>
                   {data.tags &&
                     data.tags.map(tag => (
-                      <Field
-                        key={tag.id}
-                        name="tags"
-                        type="checkbox"
-                        value={JSON.stringify(tag)}
-                      >
-                        {({ input, meta }) => (
-                          <InputLabel>
-                            <Checkbox {...input} />
-                            {tag.title}
-                          </InputLabel>
-                        )}
-                      </Field>
+                        <Field
+                          key={tag.id}
+                          name="tags"
+                          type="checkbox"
+                          value={JSON.stringify(tag)}
+                        >
+                          {({ input, meta }) => (
+                            <Fragment>
+                              <InputLabel>
+                                <Checkbox {...input} />
+                                {tag.title}
+                              </InputLabel>
+                              {console.log(meta)}
+                              {meta.error &&
+                                meta.touched && (
+                                  <Typography className={classes.errorMessage}>
+                                    {meta.error}
+                                  </Typography>
+                                )}
+                            </Fragment>
+                          )}
+                        </Field>
                     ))}
-                  <Button type="submit" variant="contained" color="primary">
-                    Share
-                  </Button>
+                  <FormControl>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="primary"
+                      disabled={ invalid || pristine || !fileSelected}
+                    >
+                      Share
+                    </Button>
+                  </FormControl>
                 </form>
               )}
             />
@@ -217,4 +278,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   undefined,
   mapDispatchToProps
-)(ShareItemForm)
+)(withStyles(styles)(ShareItemForm))

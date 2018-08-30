@@ -119,7 +119,7 @@ class AccountForm extends Component {
                       size="large"
                       color="secondary"
                       disabled={
-                        pristine || invalid || submitting // @TODO: This prop should depend on pristine or valid state of form
+                        pristine || invalid || submitting
                       }
                     >
                       {this.state.formToggle ? 'Enter' : 'Create Account'}
@@ -129,7 +129,6 @@ class AccountForm extends Component {
                         className={classes.formToggle}
                         type="button"
                         onClick={() => {
-                          // @TODO: Reset the form on submit
                           this.setState({
                             formToggle: !this.state.formToggle
                           })

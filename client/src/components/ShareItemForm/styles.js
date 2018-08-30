@@ -1,3 +1,7 @@
-const styles = theme => ({})
+const styles = theme => ({
+  errorMessage: {
+    color: 'firebrick'
+  }
+})
 
 export default styles
