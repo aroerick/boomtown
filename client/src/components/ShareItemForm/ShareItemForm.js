@@ -5,7 +5,6 @@ import {
   TextField,
   Checkbox,
   InputLabel,
-  Typography,
   FormControl
 } from '@material-ui/core'
 import ItemsContainer from '../../containers/ItemsContainer'
@@ -131,7 +130,10 @@ class ShareItemForm extends Component {
               }}
               validate={validate}
               render={({ handleSubmit, pristine, invalid, values, form }) => (
-                <form onSubmit={() => handleSubmit(form)}>
+                <form
+                  onSubmit={() => handleSubmit(form)}
+                  className={classes.form}
+                >
                   <FormSpy
                     subscription={{ values: true }}
                     component={({ values }) => {
@@ -147,7 +149,6 @@ class ShareItemForm extends Component {
                       render={({ input, meta }) => (
                         <Fragment>
                           <Button
-                            variant="contained"
                             color={fileSelected ? 'default' : 'primary'}
                             variant={fileSelected ? 'outlined' : 'contained'}
                             onClick={
@@ -180,39 +181,24 @@ class ShareItemForm extends Component {
                   <FormControl>
                     <Field name="title">
                       {({ input, meta }) => (
-                        <Fragment>
-                          <TextField placeholder="Name your Item" {...input} />
-                          {meta.error &&
-                            meta.touched && (
-                              <Typography className={classes.errorMessage}>
-                                {meta.error}
-                              </Typography>
-                            )}
-                        </Fragment>
+                        <TextField placeholder="Name your Item" {...input} />
                       )}
                     </Field>
                   </FormControl>
                   <FormControl>
                     <Field name="description">
                       {({ input, meta }) => (
-                        <Fragment>
-                          <TextField
-                            placeholder="Describe your Item"
-                            multiline
-                            {...input}
-                          />
-                          {meta.error &&
-                            meta.touched && (
-                              <Typography className={classes.errorMessage}>
-                                {meta.error}
-                              </Typography>
-                            )}
-                        </Fragment>
+                        <TextField
+                          placeholder="Describe your Item"
+                          multiline
+                          {...input}
+                        />
                       )}
                     </Field>
                   </FormControl>
-                  {data.tags &&
-                    data.tags.map(tag => (
+                  <div className={classes.tags}>
+                    {data.tags &&
+                      data.tags.map(tag => (
                         <Field
                           key={tag.id}
                           name="tags"
@@ -220,27 +206,21 @@ class ShareItemForm extends Component {
                           value={JSON.stringify(tag)}
                         >
                           {({ input, meta }) => (
-                            <Fragment>
-                              <InputLabel>
-                                <Checkbox {...input} />
-                                {tag.title}
-                              </InputLabel>
-                              {meta.error &&
-                                meta.touched && (
-                                  <Typography className={classes.errorMessage}>
-                                    {meta.error}
-                                  </Typography>
-                                )}
-                            </Fragment>
+                            <InputLabel>
+                              <Checkbox {...input} />
+                              {tag.title}
+                            </InputLabel>
                           )}
                         </Field>
-                    ))}
+                      ))}
+                  </div>
                   <FormControl>
                     <Button
                       type="submit"
                       variant="contained"
                       color="primary"
-                      disabled={ invalid || pristine || !fileSelected}
+                      disabled={invalid || pristine || !fileSelected}
+                      className={classes.submit}
                     >
                       Share
                     </Button>
