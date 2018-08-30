@@ -31,7 +31,6 @@ class ShareItemForm extends Component {
     this.fileInput = React.createRef()
   }
   validate(values) {
-    console.log(values)
     const errors = {}
     if (!values.description) {
       errors.description = 'Required'
@@ -114,7 +113,7 @@ class ShareItemForm extends Component {
   }
 
   render() {
-    const { resetImage, updateNewItem, resetNewItem, classes } = this.props
+    const { resetImage, updateNewItem, classes } = this.props
     const { fileSelected } = this.state
     return (
       <ItemsContainer>
@@ -226,7 +225,6 @@ class ShareItemForm extends Component {
                                 <Checkbox {...input} />
                                 {tag.title}
                               </InputLabel>
-                              {console.log(meta)}
                               {meta.error &&
                                 meta.touched && (
                                   <Typography className={classes.errorMessage}>
