@@ -5,7 +5,8 @@ const styles = theme => ({
   form: {
     display: 'flex',
     flexDirection: 'column',
-    maxWidth: 345,
+    justifyContent: 'space-between',
+    height: 350,
   },
   tags: {
     display: 'flex',
@@ -14,6 +15,9 @@ const styles = theme => ({
   },
   submit: {
     alignSelf: 'flex-start'
+  },
+  textInput: {
+    marginTop: 10,
   }
 })
 

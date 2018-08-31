@@ -8,12 +8,12 @@ import styles from './styles'
 
 const Share = ({ classes }) => {
   return (
-    <Grid container spacing={24} direction="row" justify="center" alignItems="center" className={classes.gridContainer}>
+    <Grid container spacing={32} direction="row" justify="center" alignItems="center" className={classes.gridContainer}>
       <Grid item xs={12} sm={4}>
         <ShareItemPreview />
       </Grid>
       <Grid item xs={12} sm={4}>
-        <Typography variant="headline">CHEESE. CHEESE. CHEESE.</Typography>
+        <Typography variant="display2" color='secondary' gutterBottom>Share. Some. Cheese.</Typography>
         <ShareItemForm />
       </Grid>
     </Grid>

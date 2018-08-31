@@ -1,7 +1,8 @@
 
 const styles = {
   root: {
-    flexGrow: 1
+    flexGrow: 1,
+    display: 'fixed'
   },
   flex: {
     flexGrow: 1
@@ -17,7 +18,7 @@ const styles = {
     display: 'inline'
   },
   toolBar: {
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   }
 }
 export default styles
