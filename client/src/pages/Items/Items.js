@@ -9,22 +9,22 @@ import styles from './styles'
 const Items = ({ classes }) => {
   return (
     <div>
-      <Grid container spacing={24} className={classes.root}>
-        <ItemsContainer>
-          {({ itemsData: { data, loading, error } }) => {
-            if (loading) {
-              return 'Content Loading...'
-            }
-            if (error) {
-              return `error: ${error.message}`
-            }
-            return data.items.map(item => (
-              <Grid key={item.id} item xs={12} sm={6} lg={4}>
-                <ItemCard item={item} />
-              </Grid>
-            ))
-          }}
-        </ItemsContainer>
+      <Grid container justify='center' spacing={24} className={classes.root}>
+          <ItemsContainer>
+            {({ itemsData: { data, loading, error } }) => {
+              if (loading) {
+                return 'Content Loading...'
+              }
+              if (error) {
+                return `error: ${error.message}`
+              }
+              return data.items.map(item => (
+                <Grid key={item.id} item xs={12} sm={6} lg={4}>
+                  <ItemCard item={item} />
+                </Grid>
+              ))
+            }}
+          </ItemsContainer>
       </Grid>
     </div>
   )
